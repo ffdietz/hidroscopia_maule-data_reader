@@ -1,12 +1,27 @@
 #include <Arduino.h>
+#include "microSD.h"
+
+
+//include sd module
+//sd reader
+//motor driver control
+//speed control
+
+
+//1 fast protoype
+//2 pcb design
+//manufaturing
+// programming
 
 void setup() {
-  pinMode(2, OUTPUT);
+  // Serial.begin(9600);
+  sd_init();
+  //pinMode PWM OUTPUT
+  pinMode(13, OUTPUT);
 }
 
-boolean state = HIGH;
 void loop() {
-  digitalWrite(2, state);
-  delay(10);
-  state = !state;
-}
+  // sd read
+  // millis delay( analogRead )
+  //  analogWrite
+  }
