@@ -16,8 +16,9 @@ char  filename[] = FILE_BASE_NAME "00.txt";
 #define error(msg) SD.errorHalt(F(msg))
  
 void sd_init(){
-  // Serial.begin(9600);
+  Serial.begin(9600);
   if (!SD.begin(SD_CSPin, SD_SCK_MHZ(50)))  SD.initErrorHalt();
+
   if(BASE_NAME_SIZE > 6)  error("FILE_BASE_NAME too long");
 
   while (SD.exists(filename)) {
@@ -27,12 +28,14 @@ void sd_init(){
       filename[BASE_NAME_SIZE]++;
     } else  error("Can't create file name");
   }
-  if (!recording_file.open(filename, O_WRONLY | O_CREAT | O_EXCL))  error("file.open");
+  if (!recording_file.open(filename, O_WRONLY | O_CREAT | O_EXCL)) {
+    error("file.open");
+  }
 }
 
 void sd_write(uint16_t input_write){
   // file = sd.open(filename, FILE_WRITE);
-  if(recording_file) recording_file.println(input_write);
+  if (recording_file) recording_file.println(input_write);
 }
 
 void sd_stop(){  
@@ -40,14 +43,15 @@ void sd_stop(){
 }
 
 void sd_test(){
-  if (recording_file) {
-    Serial.println("SD CARD WRITING");
-    recording_file.println("sd card connected");
-    recording_file.close();
-    // recording_file.println(analogRead(0));
+  if(millis() < 1000){
+     if (recording_file) {
+        Serial.println("SD writing...");
+        recording_file.println("SD CARD CONNECTED");
+      }
   }
   else {
     Serial.println("done");
+    recording_file.close();
   }
 }
 
