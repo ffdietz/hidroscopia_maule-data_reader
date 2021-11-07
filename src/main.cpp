@@ -4,14 +4,12 @@
 
 boolean serial_enable = true;
 
-//1 fast protoype
-//2 pcb design
-//manufaturing
-// programming
-
 unsigned long prev_millis = 0;
-long interval = 1000;
-byte motor_power_out = 0;
+
+unsigned long interval_on = 10;
+unsigned long interval_off = 900;
+
+byte motor_power = 0;
 boolean current_state = true;
 
 void setup() {
@@ -23,22 +21,26 @@ void setup() {
 void loop() {
   unsigned long current_millis = millis();
 
-  if(current_millis - prev_millis >= interval) {
+  //SD CARD READ TO SET THE MOTOR POWER
+
+  if(current_millis - prev_millis >= (current_state ? interval_on : interval_off)) {
+
+    //INVERSE LOGIC TO NPN TRANSISTOR DRIVER
+    if(!current_state)  motor_power = analogRead(2) / 4;
+    else                motor_power = 0;
+
+    interval_on   = analogRead(1);
+    interval_off  = analogRead(0);
+
+    current_state =! current_state;
     prev_millis = current_millis;
-
-    if(current_state)       motor_power_out = analogRead(0) / 4;
-    if(!current_state)      motor_power_out = 0;
-
-    current_state = !current_state;
-    interval = analogRead(1) + 1;
   }
   
-  motor_out(motor_power_out);
-
-  serial_print();
-  // sd read
-  // update analog read >> POWER / HIGH / LOW
-  // set timer >> HIGH / LOW
-  // analogWrite POWER
-  // sd_test();
+  motor_out(motor_power);
 }
+
+
+
+//1 fast protoype
+//2 pcb design
+//3 manufaturing //4  programming
