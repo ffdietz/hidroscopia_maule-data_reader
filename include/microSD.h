@@ -8,7 +8,7 @@ SdFile recording_file;
 
 File myFile;
 
-#define FILE_NAME "HM_"
+#define FILE_NAME "HM_" //  NAME_SIZE < 6
 #define error(msg) SD.errorHalt(F(msg))
 
 const uint8_t   NAME_SIZE = sizeof(FILE_NAME) - 1;
@@ -31,14 +31,24 @@ void sd_init(){
   // }
 }
 
-void sd_read(){  
+int sd_read(int position){
+  int n = 0;
   myFile = SD.open("HM_01.txt");
   if (myFile) {
-    Serial.println("test.txt:");
     // read from the file until there's nothing else in it:
-    while (myFile.available()) {
-      Serial.write(myFile.read());
+    while (myFile.available() && n <= position) {
+      // Serial.write(myFile.read());
+        int i = myFile.parseInt();
+        // Serial.print(F("parseInt: "));
+        // Serial.println(i);
+
+        if(n == position) return i;
+        n++;
+      // Serial.write(myFile.fileSize());  // file size
     }
+
+    // Serial.println(myFile.fileSize());
+
     myFile.close();
   } 
 
